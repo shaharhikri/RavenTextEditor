@@ -4,12 +4,19 @@
 
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/text-editor.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/text-editor.css">
 </head>
 
 <body>
     <div class="container">
         <div class="toolbar">
+            <input type="text" placeholder="Filename" value="untitled" id="filename">
+            <label for="files" id="files_lbl">Choose a file:</label>
+            <select onchange="fileHandle(this.value); this.selectedIndex=0" name="files" id="files" this.selectedIndex=0>
+                <option value="" selected="" hidden="" disabled="">File</option>
+                <option value="new">New file</option>
+            </select>
+
             <ul class="tool-list">
                 <li class="tool">
                     <button type="button" data-command='justifyLeft' class="tool--btn">
@@ -62,8 +69,10 @@
         <div id="output" contenteditable="true"></div>
 
     </div>
-    <script src="text-editor.js"></script>
+
     <script>
+        let userId = 'Users/1-A';
+        const filename = document.getElementById('filename');
         let output = document.getElementById('output');
         let buttons = document.getElementsByClassName('tool--btn');
         for (let btn of buttons) {
@@ -79,18 +88,74 @@
         }
 
         document.getElementById('save-btn').addEventListener('click', () => {
-            let markdownText = output.innerText //JSON.markdownText(output);
-            //let markdownText = 'bla'
-            let responseBody = { content: markdownText }
+            let markdownText = output.innerHTML //JSON.markdownText(output);
+            let responseBody = { 
+                userId: userId,
+                docName: filename.value,
+                content: markdownText 
+            }
             // Send a request to the server to save the document
-            fetch('/save-document', {
+            fetch('/text-editor/save-document', {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(responseBody)
             });
+
+            alert('Saved successfully.');
         });
+
+        let filesCombobox = document.getElementById('files');
+        async function renderGenres() {
+            let res = await fetch('/text-editor/get-files', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userId })
+            })
+            if (res.status == 200) {
+                let files = (await res.json()).docs;
+                for (n of files) {
+                    item = document.createElement('option');
+                    item.value = n.docName;
+                    item.innerHTML = n.docName;
+                    filesCombobox.appendChild(item);
+                }
+            }
+            else {
+                console.log(res.status)
+                console.log(res)
+            }
+        }
+        renderGenres();
+
+        async function fileHandle(value) {
+            if(value === 'new') {
+                output.innerHTML = '';
+                filename.value = 'untitled';
+            }
+            else {
+                filename.value = value;
+                let res = await fetch('/text-editor/get-document', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: userId, docName: value })
+                });
+                
+                if (res.status == 200) {
+                    output.innerHTML = (await res.json());
+                }
+                else {
+                    console.log(res.status)
+                    console.log(res)
+                }
+            }
+        }
+
     </script>
 </body>
 
