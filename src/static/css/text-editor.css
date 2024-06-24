@@ -1,49 +1,55 @@
 *,
-        *:before,
-        *:after {
-            box-sizing: border-box;
-        }
-        body{
-            height: 100vh;
-            display: grid;
-            place-items: center;
-            background-color: #f5f5f5;
-        }
-        .container{
-            width: 60%;
-            display: grid;
-            gap: 0;
-        }
-        .tool-list {
-            display: flex;
-            flex-flow: row nowrap;
-            list-style: none;
-            padding: 0;
-            overflow: hidden;
-            gap: 10px;
-            border: 1px solid #333;
-            padding: 20px;
-            border-radius: 5px;
-            background-color: white;
-        }
-        .tool--btn {
-            display: block;
-            border: none;
-            border-radius: 5px;
-            height: 30px;
-            width: 30px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .tool--btn:hover{
-            background-color: #dddddd;
-        }
-        #output {
-            height: auto;
-            min-height: 400px;
-            width: 100%;
-            padding: 1rem;
-            border: 1px solid #333;
-            border-radius: 5px;
-            background-color: white;
-        }
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 60%;
+    display: grid;
+    gap: 0;
+}
+
+.tool-list {
+    display: flex;
+    flex-flow: row nowrap;
+    list-style: none;
+    padding: 0;
+    overflow: hidden;
+    gap: 10px;
+    border: 1px solid #333;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.tool--btn {
+    display: block;
+    border: none;
+    border-radius: 5px;
+    height: 30px;
+    width: 30px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.tool--btn:hover {
+    background-color: #dddddd;
+}
+
+#output {
+    height: auto;
+    min-height: 400px;
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: white;
+}

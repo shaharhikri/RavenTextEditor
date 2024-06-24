@@ -10,12 +10,23 @@
 <body>
     <div class="container">
         <div class="toolbar">
+            <label for="filename" id="filename_lbl">Document name:</label>
             <input type="text" placeholder="Filename" value="untitled" id="filename">
-            <label for="files" id="files_lbl">Choose a file:</label>
-            <select onchange="fileHandle(this.value); this.selectedIndex=0" name="files" id="files" this.selectedIndex=0>
+            </br>
+            </br>
+            <label for="files" id="files_lbl">Choose a document:</label>
+            <select onchange="fileHandle(this.value); this.selectedIndex=0" name="files" id="files"
+                this.selectedIndex=0>
                 <option value="" selected="" hidden="" disabled="">File</option>
                 <option value="new">New file</option>
             </select>
+
+            <label for="revisions" id="revisions_lbl">Choose a revision:</label>
+            <select onchange="revisionsHandle(this.value)" name="revisions" id="revisions" this.selectedIndex=0>
+            </select>
+            <button type="revert" id="revert_btn" onclick="revert()">Revert</button>
+            </br>
+            </br>
 
             <ul class="tool-list">
                 <li class="tool">
@@ -59,7 +70,7 @@
                     </button>
                 </li>
                 <li class="tool">
-                    <button type="button" id="save-btn" class="tool--btn">
+                    <button onclick="save()" type="button" id="save-btn" class="tool--btn">
                         <i class=' fas fa-save'></i>
                     </button>
                 </li>
@@ -69,94 +80,7 @@
         <div id="output" contenteditable="true"></div>
 
     </div>
-
-    <script>
-        let userId = 'Users/1-A';
-        const filename = document.getElementById('filename');
-        let output = document.getElementById('output');
-        let buttons = document.getElementsByClassName('tool--btn');
-        for (let btn of buttons) {
-            btn.addEventListener('click', () => {
-                let cmd = btn.dataset['command'];
-                if (cmd === 'createlink') {
-                    let url = prompt("Enter the link here: ", "http:\/\/");
-                    document.execCommand(cmd, false, url);
-                } else {
-                    document.execCommand(cmd, false, null);
-                }
-            })
-        }
-
-        document.getElementById('save-btn').addEventListener('click', () => {
-            let markdownText = output.innerHTML //JSON.markdownText(output);
-            let responseBody = { 
-                userId: userId,
-                docName: filename.value,
-                content: markdownText 
-            }
-            // Send a request to the server to save the document
-            fetch('/text-editor/save-document', {
-                method: "POST", 
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(responseBody)
-            });
-
-            alert('Saved successfully.');
-        });
-
-        let filesCombobox = document.getElementById('files');
-        async function renderGenres() {
-            let res = await fetch('/text-editor/get-files', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userId: userId })
-            })
-            if (res.status == 200) {
-                let files = (await res.json()).docs;
-                for (n of files) {
-                    item = document.createElement('option');
-                    item.value = n.docName;
-                    item.innerHTML = n.docName;
-                    filesCombobox.appendChild(item);
-                }
-            }
-            else {
-                console.log(res.status)
-                console.log(res)
-            }
-        }
-        renderGenres();
-
-        async function fileHandle(value) {
-            if(value === 'new') {
-                output.innerHTML = '';
-                filename.value = 'untitled';
-            }
-            else {
-                filename.value = value;
-                let res = await fetch('/text-editor/get-document', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ userId: userId, docName: value })
-                });
-                
-                if (res.status == 200) {
-                    output.innerHTML = (await res.json());
-                }
-                else {
-                    console.log(res.status)
-                    console.log(res)
-                }
-            }
-        }
-
-    </script>
+    <script type='text/javascript' src="../static/scripts/text-editor-script.js"></script>
 </body>
 
 </html>

@@ -13,3 +13,10 @@ app.use('/static', express.static('src/static'));
 const server = app.listen(port, function () {
     console.log(`Listening on port ${server.address().port}`);
 });
+
+/*
+TODO:
+Add revert option
+Add indexed on db
+add users login/signin
+*/

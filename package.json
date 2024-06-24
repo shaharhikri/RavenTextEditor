@@ -10,7 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.19.2",
-    "ravendb": "^5.4.2"
+    "ravendb": "^5.4.2",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "dotenv": "^16.0.0"
