@@ -1,5 +1,6 @@
 let currentUserId = 'Users/1-A';
-let docsDict = new Map();
+let docsDict = new Map(); // key: document-name, value: document-id
+let revisionsDict = new Map(); // key: revisions-date, value: revisions-change-vecotr 
 const filename = document.getElementById('filename');
 const revisionsCombobox = document.getElementById('revisions');
 const saveBtn = document.getElementById('save-btn');
@@ -63,12 +64,15 @@ async function renderRevisions() {
     if (res.status == 200) {
         let files = (await res.json()).revisionsMetadata;
         for (n of files) {
-            var str = n.date + " " + n.cv;
+            revisionsDict.set(n.date, n.cv);
+            
+            var str = n.date // + " " + n.cv;
             
             item = document.createElement('option');
             item.value = str;
             item.innerHTML = str;
             revisionsCombobox.appendChild(item);
+            
         }
     }
     else {
@@ -110,7 +114,7 @@ async function fileHandle(value) {
 }
 
 async function revisionsHandle(value) {
-    var cv = encodeURIComponent(value.split(' ')[1]);
+    var cv = encodeURIComponent(revisionsDict.get(value));
     let res = await fetch('/text-editor/get-revision?cv='+cv, {
         method: 'GET',
         headers: {
@@ -130,9 +134,10 @@ async function revisionsHandle(value) {
 
 async function revert() {
     if (revisionsCombobox.options.length > 0) {
-        var revisionMetadata = revisionsCombobox.value;
+        var revisionsDate = revisionsCombobox.value
+        var revisionChangeVector = revisionsDict.get(revisionsCombobox.value);
         await save();
-        alert("Revert to " + revisionMetadata + " Succeeded");
+        alert("Revert to " + revisionsDate + " " + revisionChangeVector + " Succeeded");
     }
     else {
         alert("You cant revert in a file you didnt saved");
