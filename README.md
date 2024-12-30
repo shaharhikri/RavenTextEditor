@@ -13,7 +13,7 @@ The app demonstrates the use of document revisions for versioning, enabling user
 
 ---
 
-## Setting Up the App
+## Setting Up the App (locally)
 
 To store documents and their versions, we set up a RavenDB server and created a database named **"DocEditorDB"**.  
 Additionally, a **revisions configuration** was added to the database to ensure a new revision (version) is created for every document change.
